@@ -30,11 +30,6 @@ public class AppuntamentoBOImpl implements AppuntamentoBO {
         appuntamento.setUtente(utente);
         appuntamento.setMedico(medico);
         appuntamento.setData(data);
-		for(Appuntamento a : appuntamentoRepository.findAll()) {
-			if(a.equals(appuntamento)) {
-				throw new Exception("Appuntamento non disponibile");
-			}
-		}
 		
         return appuntamentoRepository.save(appuntamento);
 	}

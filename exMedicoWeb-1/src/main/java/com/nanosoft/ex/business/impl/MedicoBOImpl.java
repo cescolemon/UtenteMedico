@@ -70,7 +70,6 @@ public class MedicoBOImpl implements MedicoBO{
 	@Override
 	public boolean limiteAppuntamenti(Medico medico, LocalDate data) {
 		 int count = appuntamentoRepository.countByMedicoAndData(medico, data);
-		 System.out.println("AAAAAAAAAAAA: "+count);
 	     return count >=10;
 	}
 

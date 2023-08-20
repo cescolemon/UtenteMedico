@@ -86,7 +86,6 @@ public class JwtUtils {
   }
   
   public Key getSigningKey() {
-	    // Genera una chiave segreta forte con una dimensione di almeno 256 bit
 	    return Keys.secretKeyFor(SignatureAlgorithm.HS256);
 	}
 }

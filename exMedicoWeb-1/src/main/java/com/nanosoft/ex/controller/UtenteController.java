@@ -84,6 +84,7 @@ public class UtenteController {
     		
             LocalDate dataApp = LocalDate.parse(data, DateTimeFormatter.ofPattern("MM/dd/yyyy"));
             Medico medico= medicoBO.findById(Long.parseLong(id_medico));
+            if(medico==null) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ID medico errato!");
             Utente utente = utenteBO.findById(Long.parseLong(id_utente));
             if(medicoBO.limiteAppuntamenti(medico, dataApp)) { 
             	return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Il medico scelto nella data specificata non è disponibile!");

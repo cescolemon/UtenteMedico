@@ -58,7 +58,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
         .antMatchers("/**").permitAll()
         .anyRequest().authenticated();
       
-      // fix H2 database console: Refused to display ' in a frame because it set 'X-Frame-Options' to 'deny'
       http.headers().frameOptions().sameOrigin();
 
       http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);

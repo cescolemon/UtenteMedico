@@ -9,9 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.nanosoft.ex.model.Appuntamento;
 
 public class UserPrincipal implements UserDetails {
-    /**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 	private Long id;
     private String email;
