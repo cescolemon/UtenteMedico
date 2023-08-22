@@ -65,7 +65,6 @@ public class UtenteController {
     }
 	
     @GetMapping("/appuntamenti")
-   // @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> getAllAppuntamentiUtente(@RequestParam("id_utente") String id ){
         List<Appuntamento> appuntamenti = new ArrayList<>();
         Utente curr = utenteBO.findById(Long.parseLong(id));
@@ -78,7 +77,6 @@ public class UtenteController {
     }
     
     @PostMapping("/prenotazione")
-   // @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> registerAppuntamento(@RequestParam("id_utente") String id_utente, @RequestParam("id_medico")  String id_medico, @RequestParam("data")  String data) throws Exception{
     	try {   
     		
@@ -92,7 +90,7 @@ public class UtenteController {
             logger.info("Prenotazione appuntamento con il medico: "+medico.getNome()+" in data: "+data);
             Appuntamento saved =appuntamentoBO.save(utente,medico,dataApp);
             
-            return new ResponseEntity<>(saved,HttpStatus.OK); 
+            return new ResponseEntity<>(saved,HttpStatus.OK);
     	}catch (RuntimeException e) {
     		logger.error("Appuntamento non disponibile");
             Map<String,String> risp = new HashMap<>();
@@ -104,9 +102,9 @@ public class UtenteController {
     }
     
     @DeleteMapping("/{id}")
-    //@PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> deleteAppuntamento(@PathVariable Long id){
     	Appuntamento deleted= appuntamentoBO.findById(id);
+    	 if(deleted==null) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ID appuntamento errato!");
         appuntamentoBO.delete(deleted);
         logger.info("Appuntamento eliminato: "+id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

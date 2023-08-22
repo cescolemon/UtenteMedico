@@ -1,7 +1,7 @@
 package com.nanosoft.ex.business.impl;
 
 import java.util.ArrayList;
-
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,27 +30,27 @@ public class UserDetailsServiceImpl implements UserDetailsService  {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 		Utente utente= new Utente();
 		Medico medico =new Medico();
-		List<GrantedAuthority> authorities = new ArrayList<>();
 		if(email.startsWith("utente")) {
         utente = utenteBO.findByEmail(email);
         if (utente == null) {
             throw new UsernameNotFoundException("Utente non trovato: " + email);
         }
-        authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
-        return new UserPrincipal(
-                utente.getId(),
-                utente.getNome(),
-                utente.getEmail(),
-                utente.getPassword(),
-                utente.getAppuntamenti(),
-                authorities
-            );
+        List<GrantedAuthority> authorities = Arrays.asList(new SimpleGrantedAuthority("ROLE_USER"));
+       UserPrincipal userPrincipal=new UserPrincipal(
+               utente.getId(),
+               utente.getNome(),
+               utente.getEmail(),
+               utente.getPassword(),
+               utente.getAppuntamenti(),
+               authorities
+           );
+        return userPrincipal;
 		}else if (email.startsWith("medico")) {
 			medico = medicoBO.findByEmail(email);
 			 if (medico == null) {
 		            throw new UsernameNotFoundException("Utente non trovato: " + email);
 		        }
-			 authorities.add(new SimpleGrantedAuthority("ROLE_MEDICO"));
+			 List<GrantedAuthority> authorities = Arrays.asList(new SimpleGrantedAuthority("ROLE_MEDICO"));
 		     return new UserPrincipal(
 		                medico.getId(),
 		                medico.getNome(),
@@ -63,7 +63,7 @@ public class UserDetailsServiceImpl implements UserDetailsService  {
 		}
 
 
-
+		List<GrantedAuthority> authorities = Arrays.asList(new SimpleGrantedAuthority("ROLE_USER"));
         return new UserPrincipal(
             utente.getId(),
             utente.getNome(),
