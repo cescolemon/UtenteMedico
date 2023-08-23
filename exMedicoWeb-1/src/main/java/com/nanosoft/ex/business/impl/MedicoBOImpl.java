@@ -10,10 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.nanosoft.ex.business.interfaces.MedicoBO;
 import com.nanosoft.ex.model.Medico;
-import com.nanosoft.ex.model.Utente;
 import com.nanosoft.ex.repository.AppuntamentoRepository;
 import com.nanosoft.ex.repository.MedicoRepository;
-import com.nanosoft.ex.repository.UtenteRepository;
+
 
 @Service
 @Transactional

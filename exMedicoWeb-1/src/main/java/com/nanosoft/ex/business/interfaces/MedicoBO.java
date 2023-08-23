@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.nanosoft.ex.model.Medico;
-import com.nanosoft.ex.model.Utente;
+
 
 public interface MedicoBO {
 

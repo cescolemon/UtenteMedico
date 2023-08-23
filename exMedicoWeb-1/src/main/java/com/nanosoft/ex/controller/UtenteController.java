@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -119,5 +118,9 @@ public class UtenteController {
     logger.info("Lista Medici: "+medici.toString());
     return new ResponseEntity<List<Medico>>(medici, HttpStatus.OK);
 }
+
+	public void setMedicoBO(MedicoBO medicoBO) {
+		this.medicoBO = medicoBO;
+	}
 
 }

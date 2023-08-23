@@ -2,13 +2,14 @@ package com.nanosoft.ex.controller;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -169,12 +170,14 @@ public class UtenteControllerTest {
 
     
         @Test
-        void testGetAllAppuntamentiUtente() {
+        void testGetAllAppuntamentiUtente() throws Exception {
             String id = "1";
             List<Appuntamento> appuntamenti = new ArrayList<>();
             Utente curr = new Utente();
             curr.setId(Long.parseLong(id));
-            appuntamenti.add(new Appuntamento());
+            String data = "01/01/2022";
+            LocalDate dataApp = LocalDate.parse(data, DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+            appuntamenti.add(appuntamentoBO.save(curr, new Medico(), dataApp));
             when(utenteBO.findById(Long.parseLong(id))).thenReturn(curr);
             when(appuntamentoBO.findByUtente(curr)).thenReturn(appuntamenti);
 
@@ -184,9 +187,49 @@ public class UtenteControllerTest {
             assertEquals(appuntamenti, response.getBody());
         }
     
-    @Test
-    public void testDeleteAppuntamento() throws Exception {    	
-    	mockMvc.perform(MockMvcRequestBuilders.delete("/user/{id}", 1L))
-        .andExpect(status().isNoContent());
-    }
+        void testDeleteAppuntamento() {
+
+            Long id = 1L;
+            Appuntamento deleted = new Appuntamento();
+            when(appuntamentoBO.findById(id)).thenReturn(deleted);
+
+            ResponseEntity<?> response = utenteController.deleteAppuntamento(id);
+
+            verify(appuntamentoBO, times(1)).delete(deleted);
+            assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+        }
+     
+        @Test
+        void testDeleteAppuntamentoInvalidId() {
+
+            Long id = 1L;
+            when(appuntamentoBO.findById(id)).thenReturn(null);
+
+            ResponseEntity<?> response = utenteController.deleteAppuntamento(id);
+
+            assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+            assertEquals("ID appuntamento errato!", response.getBody());
+        }
+        
+        @Test
+        public void testGetAllMedici() throws Exception {
+            UtenteController utenteController = new UtenteController();
+            utenteController.setMedicoBO(medicoBO);
+            List<Medico> medici = new ArrayList<>();
+            Medico a = new Medico();
+            Medico b = new Medico();
+            a.setNome("John");
+            b.setNome("Doe");
+            medici.add(b);
+            medici.add(a);
+
+            when(medicoBO.findAll()).thenReturn(medici);
+            ResponseEntity<?> response = utenteController.getAllMedici();
+
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+            assertTrue(response.getBody() instanceof List);
+            List<Medico> mediciResponse = (List<Medico>) response.getBody();
+            assertEquals(medici.size(), mediciResponse.size());
+
+        }
 }

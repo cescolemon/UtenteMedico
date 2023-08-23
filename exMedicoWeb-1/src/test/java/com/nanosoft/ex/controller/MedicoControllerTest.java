@@ -1,13 +1,14 @@
 package com.nanosoft.ex.controller;
 
-import static org.hamcrest.Matchers.hasSize;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -87,35 +88,40 @@ public class MedicoControllerTest {
     }
 
     @Test
-    void testGetAllAppuntamentiMedico() {
+    public void testGetAllAppuntamentiMedico() throws Exception {
         String id = "1";
+
         Medico medico = new Medico();
-        medico.setId(Long.parseLong(id));
-        List<Appuntamento> appuntamenti = new ArrayList<>();
-        appuntamenti.add(new Appuntamento());
-
+        
         when(medicoBO.findById(Long.parseLong(id))).thenReturn(medico);
+ 
+        List<Appuntamento> appuntamenti = new ArrayList<>();
+        String data = "01/01/2022";
+        LocalDate dataApp = LocalDate.parse(data, DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+        appuntamenti.add(appuntamentoBO.save(new Utente(), medico, dataApp));
         when(appuntamentoBO.findByMedico(medico)).thenReturn(appuntamenti);
-
-        ResponseEntity<?> response = medicoController.getAllAppuntamentiMedico(id);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(appuntamenti, response.getBody());
+ 
+        ResponseEntity<?> responseEntity = medicoController.getAllAppuntamentiMedico(id);
+ 
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals(appuntamenti, responseEntity.getBody());
     }
-
+ 
     @Test
-    void testGetAllAppuntamentiMedico_NoAppuntamenti() {
+    public void testGetAllAppuntamentiMedicoNoAppuntamenti() {
         String id = "1";
-        Medico medico = new Medico();
-        medico.setId(Long.parseLong(id));
-        List<Appuntamento> appuntamenti = new ArrayList<>();
 
+        Medico medico = new Medico();
         when(medicoBO.findById(Long.parseLong(id))).thenReturn(medico);
+ 
+        List<Appuntamento> appuntamenti = new ArrayList<>();
         when(appuntamentoBO.findByMedico(medico)).thenReturn(appuntamenti);
 
-        ResponseEntity<?> response = medicoController.getAllAppuntamentiMedico(id);
+        ResponseEntity<?> responseEntity = medicoController.getAllAppuntamentiMedico(id);
 
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        assertEquals("Nessun appuntamento trovato", response.getBody());
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+        assertEquals("Nessun appuntamento trovato", responseEntity.getBody());
     }
+    
+
 }
