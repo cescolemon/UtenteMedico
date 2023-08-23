@@ -1,7 +1,7 @@
 package com.nanosoft.ex.controller;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doThrow;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -89,7 +89,7 @@ public class UtenteControllerTest {
         Utente utente = new Utente();
         utente.setEmail("utente_test@nanosoft.com");
 
-        doThrow(new RuntimeException("Email già utilizzata!")).when(utenteBO).save(any(Utente.class));
+        when(utenteBO.findByEmail(anyString())).thenReturn(utente);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/user/register")
                 .contentType(MediaType.APPLICATION_JSON)

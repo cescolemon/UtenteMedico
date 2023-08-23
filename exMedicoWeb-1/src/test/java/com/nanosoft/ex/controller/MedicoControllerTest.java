@@ -3,7 +3,7 @@ package com.nanosoft.ex.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doThrow;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 
@@ -78,7 +78,7 @@ public class MedicoControllerTest {
     	Medico medico = new Medico();
         medico.setEmail("medico_test@nanosoft.com");
 
-        doThrow(new RuntimeException("Email già utilizzata!")).when(medicoBO).save(any(Medico.class));
+        when(medicoBO.findByEmail(anyString())).thenReturn(medico);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/doctor/register")
                 .contentType(MediaType.APPLICATION_JSON)
