@@ -21,6 +21,7 @@ import com.nanosoft.ex.model.Appuntamento;
 import com.nanosoft.ex.model.Medico;
 
 
+
 @RestController
 @RequestMapping("/doctor")
 public class MedicoController {
@@ -37,13 +38,15 @@ public class MedicoController {
     public ResponseEntity<?> registerMedico(@RequestBody Medico medico) {
         try {
         	String email="medico_"+medico.getEmail();
+        	Medico emailUsed= medicoBO.findByEmail(email);
+        	if(emailUsed!= null) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email già utilizzata!");
         	medico.setEmail(email);
             Medico created = medicoBO.save(medico);
             logger.info("Registrazione medico: "+created.getNome()+" con email: "+created.getEmail());
             return ResponseEntity.status(HttpStatus.CREATED).body("Medico creato correttamente!");
         } catch (Exception e) {
         	logger.error("Eccezione: ",e);
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email già utilizzata!");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e);
         }
     }
 	

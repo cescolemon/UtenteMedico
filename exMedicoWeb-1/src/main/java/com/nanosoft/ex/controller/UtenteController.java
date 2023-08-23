@@ -52,6 +52,8 @@ public class UtenteController {
     public ResponseEntity<?> registerUtente(@RequestBody Utente utente) {
         try {
         	String email= "utente_"+utente.getEmail();
+        	Utente emailUsed= utenteBO.findByEmail(email);
+        	if(emailUsed!= null) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email già utilizzata!");
         	utente.setEmail(email);
             Utente created = utenteBO.save(utente);
             logger.info("Registrazione utente: "+created.getNome()+" con email: "+created.getEmail());
@@ -59,7 +61,7 @@ public class UtenteController {
                     .body("Utente creato correttamente!");
         } catch (Exception e) {
         	logger.error("Eccezione: ",e);
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email già utilizzata!");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e);
         }
     }
 	
